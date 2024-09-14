@@ -26,7 +26,6 @@ const MembersTable = () => {
   const { allAdminMembers, searchMemberByText } = useSelector(
     (store) => store.member
   );
-  console.log("all admin members ....", allAdminMembers);
   const [filterMembers, setFilterMembers] = useState(allAdminMembers);
   const [open, setOpen] = useState(false);
   //const [openAssignMembership, setOpenAssignMembership] = useState(false);

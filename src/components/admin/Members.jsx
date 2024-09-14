@@ -5,18 +5,45 @@ import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import MembersTable from "./MembersTable";
-import useGetAllMembers from "@/hooks/useGetAllMembers";
-import { setSearchMemberByText } from "@/redux/memberSlice";
+//import useGetAllMembers from "@/hooks/useGetAllMembers";
+import { setSearchMemberByText, setAllAdminMembers } from "@/redux/memberSlice";
+
+import { MEMBER_API_END_POINT } from "@/utils/constant";
+import axios from "axios";
+import Loader from "../shared/Loader";
 
 const Members = () => {
-  useGetAllMembers();
   const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  // Fetch all members and dispatch filter input to the Redux store
+  useEffect(() => {
+    const fetchMembers = async () => {
+      try {
+        const res = await axios.get(`${MEMBER_API_END_POINT}`, {
+          //withCredentials: true,
+        });
+        if (res.data.success) {
+          dispatch(setAllAdminMembers(res.data.members));
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchMembers();
+    setLoading(false);
+  }, []);
+
   useEffect(() => {
     dispatch(setSearchMemberByText(input));
-  }, [input]);
+  }, [input, dispatch]);
+
+  const handleInputChange = (e) => setInput(e.target.value);
+  const handleNewMemberClick = () => navigate("/admin/member/create");
+
   return (
     <div>
       <Navbar />
@@ -25,13 +52,12 @@ const Members = () => {
           <Input
             className="w-80"
             placeholder="Filter by name"
-            onChange={(e) => setInput(e.target.value)}
+            value={input}
+            onChange={handleInputChange}
           />
-          <Button onClick={() => navigate("/admin/member/create")}>
-            New Member
-          </Button>
+          <Button onClick={handleNewMemberClick}>New Member</Button>
         </div>
-        <MembersTable />
+        {loading ? <Loader /> : <MembersTable />}
       </div>
     </div>
   );

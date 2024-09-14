@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { MEMBER_API_END_POINT } from "@/utils/constant";
 import useGetMemberById from "@/hooks/useGetMemberById";
-import useGetAllAdminMemberships from "@/hooks/useGetAllAdminMemberships";
 import useGetAllAdminSeats from "@/hooks/useGetAllAdminSeats";
 import { toast } from "sonner";
 import { useNavigate, useParams } from "react-router-dom";
@@ -33,13 +32,11 @@ const AssignSeat = () => {
   const navigate = useNavigate();
 
   useGetMemberById(params.id);
-  useGetAllAdminMemberships();
   useGetAllAdminSeats();
 
   const { allAdminMembers, singleMember } = useSelector(
     (store) => store.member
   );
-  const { allAdminMemberships } = useSelector((store) => store.membership);
   const { allAdminSeats } = useSelector((store) => store.seat);
 
   const [loading, setLoading] = useState(false);
@@ -60,44 +57,45 @@ const AssignSeat = () => {
     setInput({ ...input, [field]: value });
   };
 
-  const submitHandler = async (data) => {
-    //setLoading(true);
-    console.log("startDate-----", startDate);
-    console.log("endDate-----", endDate);
+  const submitHandler = async () => {
+    setLoading(true);
+
     const updatedInput = {
       ...input,
       reservationStartTime: startDate.toString(),
       reservationEndTime: endDate.toString(), // Use the correct date state
     };
-    console.log(updatedInput);
-    // try {
-    //   const res = await axios.patch(
-    //     `${MEMBER_API_END_POINT}/${selectedMember}`,
-    //     updatedInput
-    //   );
-    //   if (res.data.success) {
-    //     const updatedMembers = updateMember(
-    //       allAdminMembers,
-    //       selectedMember,
-    //       res?.data?.updatedMember
-    //     );
-    //     dispatch(setAllAdminMembers(updatedMembers));
-    //     navigate("/admin/members");
-    //     toast.success(res.data.message);
-    //   }
-    // } catch (error) {
-    //   const errorMessage =
-    //     error.response?.data?.message || "An error occurred.";
-    //   toast.error(errorMessage);
-    // } finally {
-    //   setLoading(false);
-    // }
+    console.log("updatedInput", updatedInput);
+    try {
+      const res = await axios.patch(
+        `${MEMBER_API_END_POINT}/assignSeat/${selectedMember}`,
+        updatedInput
+      );
+      if (res.data.success) {
+        console.log("hello.....", res?.data?.updatedMember);
+        const updatedMembers = updateMember(
+          allAdminMembers,
+          selectedMember,
+          res?.data?.updatedMember
+        );
+        console.log("updated membrer-----", updatedMembers);
+        dispatch(setAllAdminMembers(updatedMembers));
+        navigate("/admin/members");
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || "An error occurred.";
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const updateMember = (membersArray, memberId, updatedData) => {
     return membersArray.map((member) => {
       if (member._id === memberId) {
-        return { ...member, ...updatedData };
+        return { ...member, reservation: updatedData };
       }
       return member;
     });
@@ -105,9 +103,44 @@ const AssignSeat = () => {
 
   useEffect(() => {
     if (singleMember) {
-      setEndDate(endDate);
+      // Pre-populate with current time or specific time from singleMember if available
+      const currentDate = new Date();
+      setStartDate(currentDate); // Default to current time for start
+      setEndDate(currentDate); // Default to current time for end
+
+      // Fetch and populate reserved seat data from API
+      const fetchReservationByMember = async () => {
+        try {
+          const res = await axios.get(
+            `${MEMBER_API_END_POINT}/assignSeat/${selectedMember}`,
+            {
+              //withCredentials: true,
+            }
+          );
+          if (res.data.success) {
+            setInput({ ...input, seat: res.data.reservedByMember[0].seat._id });
+            console.log("reservedByMember", res.data.reservedByMember[0]);
+
+            // If the reservation has specific start and end times, pre-fill them
+            if (res.data.reservedByMember[0].reservationStartTime) {
+              setStartDate(
+                new Date(res.data.reservedByMember[0].reservationStartTime)
+              );
+            }
+            if (res.data.reservedByMember[0].reservationEndTime) {
+              setEndDate(
+                new Date(res.data.reservedByMember[0].reservationEndTime)
+              );
+            }
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
+      fetchReservationByMember();
     }
-  }, []);
+  }, [singleMember, selectedMember]);
 
   return (
     <div>
