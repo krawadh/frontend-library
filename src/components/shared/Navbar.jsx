@@ -47,7 +47,7 @@ const Navbar = () => {
           {/* Logo */}
           <NavLink to="/">
             <img
-              src="../../../public/logo.png" // Update this path to the location of your logo
+              src="/logo.png" // Update this path to the location of your logo
               alt="Library Portal Logo"
               className="h-16" // Adjust size as needed
             />
