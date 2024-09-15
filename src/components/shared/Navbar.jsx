@@ -48,7 +48,7 @@ const Navbar = () => {
           <NavLink to="/">
             <img
               src="/logo.png" // Update this path to the location of your logo
-              alt="Library Portal Logo"
+              alt="Prime academy and Library"
               className="h-16" // Adjust size as needed
             />
           </NavLink>

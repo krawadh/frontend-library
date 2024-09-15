@@ -84,7 +84,28 @@ const MembersTable = () => {
       setLoading(false);
     }
   };
-
+  useEffect(() => {
+    filterMembers.map((mem) => {
+      console.log(
+        "member---------",
+        mem?.reservations?.[0]?.reservationStartTime
+          ? mem?.reservations?.[0]?.reservationStartTime
+          : "--"
+      );
+      console.log(
+        "member---------",
+        mem?.reservations?.[0]?.reservationEndTime
+          ? new Date(mem?.reservations?.[0]?.reservationEndTime)
+          : "--"
+      );
+      console.log(
+        "seat---------",
+        mem?.reservations?.[0]?.seat
+          ? mem?.reservations?.[0]?.seat?.seatNumber
+          : "--"
+      );
+    });
+  }, []);
   return (
     <div>
       <Table>
@@ -95,6 +116,8 @@ const MembersTable = () => {
             <TableHead>Email</TableHead>
             <TableHead>Phone</TableHead>
             <TableHead>Membership</TableHead>
+            <TableHead>Seat No</TableHead>
+            {/* <TableHead>Timing</TableHead> */}
             <TableHead>Expiry</TableHead>
             {/* <TableHead>Start Date</TableHead>
             <TableHead>End Date</TableHead> */}
@@ -114,6 +137,15 @@ const MembersTable = () => {
                   if (member?.membership) {
                     const { membershipType, fee, duration } = member.membership;
                     return `${membershipType}-${fee}-${duration}`;
+                  }
+                  return "";
+                })()}
+              </TableCell>
+              <TableCell>
+                {(() => {
+                  if (member?.reservations?.[0]?.seat) {
+                    //const { seatNumber } = member.reservations.[0].seat;
+                    return `${member?.reservations?.[0]?.seat?.seatNumber}`;
                   }
                   return "";
                 })()}
