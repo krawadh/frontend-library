@@ -36,21 +36,17 @@ const MembershipUpdate = () => {
   });
 
   const { singleMembership } = useSelector((store) => store.membership);
-
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Handler for text input changes
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
 
-  // Handler for select changes
   const selectChangeHandler = (value, field) => {
     setInput({ ...input, [field]: value });
   };
 
-  // Form submission handler
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
@@ -87,10 +83,10 @@ const MembershipUpdate = () => {
   return (
     <div>
       <Navbar />
-      <div className="flex items-center justify-center w-screen my-4">
+      <div className="flex items-center justify-center w-screen px-4 sm:px-6 lg:px-8 my-4">
         <form
           onSubmit={submitHandler}
-          className="p-4 max-w-4xl border border-gray-200 shadow-lg rounded-md"
+          className="p-4 sm:p-8 max-w-lg sm:max-w-2xl lg:max-w-4xl w-full border border-gray-200 shadow-lg rounded-md"
         >
           <div className="flex justify-between py-4">
             <h1 className="font-bold text-xl">Membership</h1>
@@ -104,8 +100,8 @@ const MembershipUpdate = () => {
             </Button>
           </div>
           <div>
-            <div className="grid grid-cols-2 gap-2">
-              <div className="gap-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
                 <Label>Membership Type</Label>
                 <Select
                   name="membershipType"
@@ -114,7 +110,7 @@ const MembershipUpdate = () => {
                     selectChangeHandler(value, "membershipType")
                   }
                 >
-                  <SelectTrigger className="w-[180px]">
+                  <SelectTrigger className="w-full">
                     <SelectValue
                       placeholder={input.membershipType || "Select a type"}
                     />
@@ -138,11 +134,12 @@ const MembershipUpdate = () => {
                   value={input.fee}
                   onChange={changeEventHandler}
                   placeholder="Enter fee"
+                  className="w-full"
                 />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-2">
-              <div className="gap-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-4">
+              <div>
                 <Label>Duration</Label>
                 <Select
                   name="duration"
@@ -151,7 +148,7 @@ const MembershipUpdate = () => {
                     selectChangeHandler(value, "duration")
                   }
                 >
-                  <SelectTrigger className="w-[180px]">
+                  <SelectTrigger className="w-full">
                     <SelectValue
                       placeholder={input.duration || "Select a duration"}
                     />
@@ -168,10 +165,10 @@ const MembershipUpdate = () => {
                 </Select>
               </div>
             </div>
-            <div className="grid grid-cols-1 w-full gap-2">
-              <Label className="m-1">Description</Label>
+            <div className="grid grid-cols-1 w-full gap-4 my-4">
+              <Label>Description</Label>
               <Textarea
-                className="my-1 row-span-12"
+                className="w-full"
                 placeholder="Type your message here."
                 name="description"
                 value={input.description}

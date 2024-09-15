@@ -55,16 +55,9 @@ const AdminMembershipsTable = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        //withCredentials: true,
       });
-      console.log("before deletion----", filterMemberships);
-      console.log(res.data.success);
       if (res.data.success) {
-        const afterDeleted = filterMemberships.filter((e) => {
-          console.log(e._id, id);
-          return e._id !== id;
-        });
-        console.log("after deletion---", afterDeleted);
+        const afterDeleted = filterMemberships.filter((e) => e._id !== id);
         toast.success(res.data.message);
         dispatch(setAllAdminMemberships(afterDeleted));
       }
@@ -74,53 +67,55 @@ const AdminMembershipsTable = () => {
       setLoading(false);
     }
   };
+
   return (
-    <div>
-      <Table>
-        <TableCaption>A list of your recent added Memberships.</TableCaption>
+    <div className="overflow-x-auto">
+      <Table className="min-w-full">
+        <TableCaption>A list of your recently added memberships.</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="">Membership Type</TableHead>
-            <TableHead>Fee</TableHead>
-            <TableHead>Duration</TableHead>
-            <TableHead>Available</TableHead>
-            <TableHead>Description</TableHead>
-            <TableHead className="text-right">Action</TableHead>
+            <TableHead className="whitespace-nowrap">Membership Type</TableHead>
+            <TableHead className="whitespace-nowrap">Fee</TableHead>
+            <TableHead className="whitespace-nowrap">Duration</TableHead>
+            <TableHead className="whitespace-nowrap">Available</TableHead>
+            <TableHead className="whitespace-nowrap">Description</TableHead>
+            <TableHead className="text-right whitespace-nowrap">
+              Action
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {filterMemberships?.map((member) => (
-            <TableRow key={member._id}>
-              <TableCell>{member?.membershipType}</TableCell>
-              <TableCell>{member?.fee}</TableCell>
-              <TableCell>{member?.duration}</TableCell>
-              <TableCell>{member?.isActive ? "Yes" : "No"}</TableCell>
-              <TableCell>{member?.description}</TableCell>
+            <TableRow key={member._id} className="text-sm">
+              <TableCell className="whitespace-nowrap">
+                {member?.membershipType}
+              </TableCell>
+              <TableCell className="whitespace-nowrap">{member?.fee}</TableCell>
+              <TableCell className="whitespace-nowrap">
+                {member?.duration}
+              </TableCell>
+              <TableCell className="whitespace-nowrap">
+                {member?.isActive ? "Yes" : "No"}
+              </TableCell>
+              <TableCell className="whitespace-nowrap">
+                {member?.description}
+              </TableCell>
 
-              <TableCell className="text-right cursor-pointer">
+              <TableCell className="text-right">
                 <Popover>
                   <PopoverTrigger>
-                    <MoreHorizontal />
+                    <MoreHorizontal className="cursor-pointer" />
                   </PopoverTrigger>
                   <PopoverContent className="w-32">
                     <div
                       onClick={() =>
                         navigate(`/admin/membership/${member._id}`)
                       }
-                      className="flex items-center gap-2 w-fit cursor-pointer"
+                      className="flex items-center gap-2 w-full cursor-pointer"
                     >
                       <Edit2 className="w-4" />
                       <span>Edit</span>
                     </div>
-                    {/* <div
-                      onClick={() =>
-                        navigate(`/admin/jobs/${member._id}/applicants`)
-                      }
-                      className="flex items-center w-fit gap-2 cursor-pointer mt-2"
-                    >
-                      <Eye className="w-4" />
-                      <span>Member Allotment</span>
-                    </div> */}
                     {loading ? (
                       <Button className="w-full my-4">
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please
@@ -129,7 +124,7 @@ const AdminMembershipsTable = () => {
                     ) : (
                       <div
                         onClick={() => removeHandler(member._id)}
-                        className="flex items-center w-fit gap-2 cursor-pointer mt-2"
+                        className="flex items-center w-full gap-2 cursor-pointer mt-2"
                       >
                         <Trash2 className="w-4" />
                         <span>Remove</span>

@@ -15,10 +15,6 @@ import {
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
-// import jobSlice from "./jobSlice";
-// import companySlice from "./companySlice";
-// import applicationSlice from "./applicationSlice";
-
 const persistConfig = {
   key: "root",
   version: 1,
@@ -30,10 +26,6 @@ const rootReducer = combineReducers({
   seat: seatSlice,
   membership: membershipSlice,
   member: memberSlice,
-  //job: jobSlice,
-
-  //company:companySlice,
-  //application:applicationSlice
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

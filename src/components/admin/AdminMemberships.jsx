@@ -17,17 +17,21 @@ const AdminMemberships = () => {
   useEffect(() => {
     dispatch(setSearchMembershipByText(input));
   }, [input]);
+
   return (
     <div>
       <Navbar />
-      <div className="max-w-6xl mx-auto my-10">
-        <div className="flex items-center justify-between my-5">
+      <div className="max-w-6xl mx-auto my-10 px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col sm:flex-row items-center justify-between my-5 gap-4">
           <Input
-            className="w-80"
+            className="w-full sm:w-80"
             placeholder="Filter by membership, duration, available"
             onChange={(e) => setInput(e.target.value)}
           />
-          <Button onClick={() => navigate("/admin/membership/create")}>
+          <Button
+            className="w-full sm:w-auto"
+            onClick={() => navigate("/admin/membership/create")}
+          >
             New Membership
           </Button>
         </div>

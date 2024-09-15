@@ -22,7 +22,7 @@ import useGetSeatById from "@/hooks/useGetSeatById";
 const SeatUpdate = () => {
   const params = useParams();
   useGetSeatById(params.id);
-
+  const { singleSeat } = useSelector((store) => store.seat);
   const [input, setInput] = useState({
     seatNumber: "",
     seatType: "",
@@ -30,11 +30,10 @@ const SeatUpdate = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  //const { user } = useSelector((store) => store.auth);
-  const { singleSeat } = useSelector((store) => store.seat);
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
+
   const selectChangeHandler = (value) => {
     setInput({ ...input, seatType: value });
   };
@@ -42,7 +41,6 @@ const SeatUpdate = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
-      //setInput({ ...input, createdBy: user.id });
       setLoading(true);
       const res = await axios.patch(
         `${SEAT_API_END_POINT}/${params.id}`,
@@ -51,7 +49,6 @@ const SeatUpdate = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          //withCredentials: true,
         }
       );
       if (res.data.success) {
@@ -66,22 +63,24 @@ const SeatUpdate = () => {
   };
 
   useEffect(() => {
-    setInput({
-      seatNumber: singleSeat.seatNumber || "",
-      seatType: singleSeat.seatType || "",
-    });
+    if (singleSeat) {
+      setInput({
+        seatNumber: singleSeat.seatNumber || "",
+        seatType: singleSeat.seatType || "",
+      });
+    }
   }, [singleSeat]);
 
   return (
     <div>
       <Navbar />
-      <div className="flex items-center justify-center w-screen my-4">
+      <div className="flex items-center justify-center w-full my-4 px-4">
         <form
           onSubmit={submitHandler}
-          className="p-4 max-w-4xl border border-gray-200 shadow-lg rounded-md"
+          className="p-6 max-w-4xl w-full border border-gray-200 shadow-lg rounded-md"
         >
           <div className="flex justify-between py-4">
-            <h1 className="font-bold text-xl">Membership</h1>
+            <h1 className="font-bold text-xl">Seat Update</h1>
             <Button
               onClick={() => navigate("/admin/seats")}
               variant="outline"
@@ -91,38 +90,36 @@ const SeatUpdate = () => {
               <span>Back</span>
             </Button>
           </div>
-          <div>
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <Label>Seat Number</Label>
-                <Input
-                  type="text"
-                  name="seatNumber"
-                  value={input.seatNumber}
-                  onChange={changeEventHandler}
-                  placeholder="Enter seat no"
-                  // className="focus-visible:ring-offset-0 focus-visible:ring-0 my-1"
-                />
-              </div>
-              <div>
-                <Label>Seat Type</Label>
-                <Select
-                  onValueChange={selectChangeHandler}
-                  value={input.seatType}
-                >
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue
-                      placeholder={input.seatType || "Select a Company"}
-                    />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem value="Normal">Normal</SelectItem>
-                      <SelectItem value="Cabin">Cabin</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label>Seat Number</Label>
+              <Input
+                type="text"
+                name="seatNumber"
+                value={input?.seatNumber}
+                onChange={changeEventHandler}
+                placeholder="Enter seat number"
+                className="w-full"
+              />
+            </div>
+            <div>
+              <Label>Seat Type</Label>
+              <Select
+                onValueChange={selectChangeHandler}
+                value={input.seatType}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue
+                    placeholder={input.seatType || "Select a Seat Type"}
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="Normal">Normal</SelectItem>
+                    <SelectItem value="Cabin">Cabin</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </div>
           </div>
           {loading ? (
@@ -131,7 +128,7 @@ const SeatUpdate = () => {
             </Button>
           ) : (
             <Button type="submit" className="w-full my-4">
-              Update Membership
+              Update Seat
             </Button>
           )}
         </form>

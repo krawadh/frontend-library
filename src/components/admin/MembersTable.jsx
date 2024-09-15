@@ -69,8 +69,6 @@ const MembersTable = () => {
         },
         //withCredentials: true,
       });
-      console.log("before deletion----", filterMembers);
-      console.log(res.data.success);
       if (res.data.success) {
         const afterDeleted = filterMembers.filter((e) => {
           console.log(e._id, id);

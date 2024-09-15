@@ -16,21 +16,22 @@ import axios from "axios";
 import { SEAT_API_END_POINT } from "@/utils/constant";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import { Loader2 } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 
 const SeatCreate = () => {
+  const { user } = useSelector((store) => store.auth);
   const [input, setInput] = useState({
     seatNumber: "",
     seatType: "",
-    createdBy: "",
+    createdBy: user.id,
   });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const { user } = useSelector((store) => store.auth);
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
+
   const selectChangeHandler = (value) => {
     setInput({ ...input, seatType: value });
   };
@@ -38,13 +39,11 @@ const SeatCreate = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
-      setInput({ ...input, createdBy: user.id });
       setLoading(true);
       const res = await axios.post(`${SEAT_API_END_POINT}`, input, {
         headers: {
           "Content-Type": "application/json",
         },
-        //withCredentials: true,
       });
       if (res.data.success) {
         toast.success(res.data.message);
@@ -60,12 +59,23 @@ const SeatCreate = () => {
   return (
     <div>
       <Navbar />
-      <div className="flex items-center justify-center w-screen my-5">
+      <div className="flex items-center justify-center w-full my-5 px-4">
         <form
           onSubmit={submitHandler}
-          className="p-8 max-w-4xl border border-gray-200 shadow-lg rounded-md"
+          className="p-8 w-full max-w-4xl border border-gray-200 shadow-lg rounded-md"
         >
-          <div className="grid grid-cols-2 gap-2">
+          <div className="flex justify-between py-4">
+            <h1 className="font-bold text-xl">Seat Add</h1>
+            <Button
+              onClick={() => navigate("/admin/seats")}
+              variant="outline"
+              className="flex items-center gap-2 text-gray-500 font-semibold"
+            >
+              <ArrowLeft />
+              <span>Back</span>
+            </Button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label>Seat Number</Label>
               <Input
@@ -73,15 +83,15 @@ const SeatCreate = () => {
                 name="seatNumber"
                 value={input.seatNumber}
                 onChange={changeEventHandler}
-                placeholder="Enter seat no"
-                // className="focus-visible:ring-offset-0 focus-visible:ring-0 my-1"
+                placeholder="Enter seat number"
+                className="w-full"
               />
             </div>
             <div>
               <Label>Seat Type</Label>
               <Select onValueChange={selectChangeHandler}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Select a Company" />
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select a Seat Type" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
@@ -94,8 +104,7 @@ const SeatCreate = () => {
           </div>
           {loading ? (
             <Button className="w-full my-4">
-              {" "}
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait{" "}
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait
             </Button>
           ) : (
             <Button type="submit" className="w-full my-4">
