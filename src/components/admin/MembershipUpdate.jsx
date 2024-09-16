@@ -82,7 +82,7 @@ const MembershipUpdate = () => {
 
   return (
     <div>
-      <Navbar />
+      {/* <Navbar /> */}
       <div className="flex items-center justify-center w-screen px-4 sm:px-6 lg:px-8 my-4">
         <form
           onSubmit={submitHandler}

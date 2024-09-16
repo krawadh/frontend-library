@@ -73,7 +73,7 @@ const SeatUpdate = () => {
 
   return (
     <div>
-      <Navbar />
+      {/* <Navbar /> */}
       <div className="flex items-center justify-center w-full my-4 px-4">
         <form
           onSubmit={submitHandler}

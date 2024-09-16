@@ -10,8 +10,12 @@ import { MEMBER_API_END_POINT } from "@/utils/constant";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { ArrowLeft, Loader2 } from "lucide-react";
+import { addMember, setLoading } from "../../redux/memberSlice";
 
 const MemberCreate = () => {
+  const { allAdminMembers, loading } = useSelector((store) => store.member);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [input, setInput] = useState({
     firstName: "",
     lastName: "",
@@ -22,9 +26,6 @@ const MemberCreate = () => {
     role: "",
     //file: "",
   });
-  const [loading, setLoading] = useState(false);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
@@ -53,16 +54,14 @@ const MemberCreate = () => {
     // }
     //console.log("formdata ......", formData);
     try {
-      console.log("input data----", updatedInput);
-      console.log("set loading--", loading);
-      setLoading(true);
       const res = await axios.post(`${MEMBER_API_END_POINT}`, updatedInput, {
         //headers: { "Content-Type": "multipart/form-data" },
         headers: { "Content-Type": "application/json" },
       });
       if (res.data.success) {
-        navigate("/admin/members");
+        dispatch(addMember(res.data.member));
         toast.success(res.data.message);
+        navigate("/admin/members");
       }
     } catch (error) {
       console.log(error);
@@ -70,7 +69,7 @@ const MemberCreate = () => {
         return toast.error(error.response.data.error.message);
       toast.error(error.response.data.message);
     } finally {
-      setLoading(false);
+      dispatch(setLoading(false));
     }
   };
 
@@ -81,7 +80,7 @@ const MemberCreate = () => {
   }, []);
   return (
     <div>
-      <Navbar />
+      {/* <Navbar /> */}
       <div className="flex items-center justify-center max-w-7xl mx-auto">
         <form
           onSubmit={submitHandler}

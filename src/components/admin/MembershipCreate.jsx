@@ -66,7 +66,7 @@ const MembershipCreate = () => {
 
   return (
     <div>
-      <Navbar />
+      {/* <Navbar /> */}
       <div className="flex items-center justify-center w-screen my-8 px-4 sm:px-6 lg:px-8">
         <form
           onSubmit={submitHandler}

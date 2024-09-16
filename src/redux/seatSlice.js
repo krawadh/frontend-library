@@ -1,15 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
-
+const initialState = {
+  allSeats: [],
+  allAdminSeats: [],
+  singleSeat: null,
+  searchSeatByText: "",
+  allAppliedSeats: [],
+  searchedQuery: "",
+};
 const seatSlice = createSlice({
   name: "seat",
-  initialState: {
-    allSeats: [],
-    allAdminSeats: [],
-    singleSeat: null,
-    searchSeatByText: "",
-    allAppliedSeats: [],
-    searchedQuery: "",
-  },
+  initialState,
   reducers: {
     // actions
     setAllSeats: (state, action) => {
@@ -31,6 +31,7 @@ const seatSlice = createSlice({
     setSearchedQuery: (state, action) => {
       state.searchedQuery = action.payload;
     },
+    resetSeat: (state) => initialState, // Reset action
   },
 });
 export const {
@@ -40,5 +41,6 @@ export const {
   setSearchSeatByText,
   setAllAppliedSeats,
   setSearchedQuery,
+  resetSeat,
 } = seatSlice.actions;
 export default seatSlice.reducer;

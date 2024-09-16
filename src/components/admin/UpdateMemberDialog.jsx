@@ -18,6 +18,7 @@ import useGetMemberById from "@/hooks/useGetMemberById";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { setAllAdminMembers } from "../../redux/memberSlice";
+//import useGetAllMembers from "@/hooks/useGetAllMembers";
 
 const UpdateMemberDialog = ({ open, setOpen, selectedMember }) => {
   const dispatch = useDispatch();
@@ -64,7 +65,6 @@ const UpdateMemberDialog = ({ open, setOpen, selectedMember }) => {
         input
       );
       if (res.data.success) {
-        navigate("/admin/members");
         // Update the members array
         const updatedMembers = updateMember(
           allAdminMembers,
@@ -72,8 +72,9 @@ const UpdateMemberDialog = ({ open, setOpen, selectedMember }) => {
           res?.data?.updatedMember
         );
         dispatch(setAllAdminMembers(updatedMembers));
-
+        //useGetAllMembers();
         toast.success(res.data.message);
+        navigate("/admin/members");
       }
     } catch (error) {
       console.log(error);

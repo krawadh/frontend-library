@@ -1,14 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
-
+const initialState = {
+  allAdminMemberships: [],
+  singleMembership: null,
+  searchMembershipByText: "",
+  allAppliedMemberships: [],
+  searchedQuery: "",
+};
 const membershipSlice = createSlice({
   name: "Membership",
-  initialState: {
-    allAdminMemberships: [],
-    singleMembership: null,
-    searchMembershipByText: "",
-    allAppliedMemberships: [],
-    searchedQuery: "",
-  },
+  initialState,
   reducers: {
     // actions
     setAllAdminMemberships: (state, action) => {
@@ -27,6 +27,7 @@ const membershipSlice = createSlice({
     setSearchedQuery: (state, action) => {
       state.searchedQuery = action.payload;
     },
+    resetMembership: (state) => initialState, // Reset action
   },
 });
 export const {
@@ -35,5 +36,6 @@ export const {
   setSearchMembershipByText,
   setAllAppliedMemberships,
   setSearchedQuery,
+  resetMembership,
 } = membershipSlice.actions;
 export default membershipSlice.reducer;

@@ -130,7 +130,7 @@ const AssignMembership = () => {
 
   return (
     <div>
-      <Navbar />
+      {/* <Navbar /> */}
       <div className="flex items-center justify-center w-screen my-4">
         <form
           onSubmit={submitHandler}

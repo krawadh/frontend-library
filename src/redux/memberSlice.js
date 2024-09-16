@@ -1,19 +1,23 @@
 import { createSlice } from "@reduxjs/toolkit";
-
+const initialState = {
+  loading: true,
+  errmessage: "",
+  allAdminMembers: [],
+  singleMember: null,
+  searchMemberByText: "",
+  allAppliedMembers: [],
+  searchedQuery: "",
+};
 const memberSlice = createSlice({
   name: "member",
-  initialState: {
-    allMembers: [],
-    allAdminMembers: [],
-    singleMember: null,
-    searchMemberByText: "",
-    allAppliedMembers: [],
-    searchedQuery: "",
-  },
+  initialState,
   reducers: {
     // actions
-    setAllMembers: (state, action) => {
-      state.allMembers = action.payload;
+    setLoading: (state, action) => {
+      state.loading = action.payload;
+    },
+    setErrmessage: (state, action) => {
+      state.errmessage = action.payload;
     },
     setAllAdminMembers: (state, action) => {
       state.allAdminMembers = action.payload;
@@ -25,20 +29,27 @@ const memberSlice = createSlice({
     setSearchMemberByText: (state, action) => {
       state.searchMemberByText = action.payload;
     },
-    setAllAppliedMembers: (state, action) => {
-      state.allAppliedMembers = action.payload;
-    },
     setSearchedQuery: (state, action) => {
       state.searchedQuery = action.payload;
     },
+    addMember: (state, action) => {
+      console.log(action.payload);
+      return {
+        ...state,
+        allAdminMembers: [...state.allAdminMembers, action.payload], // Create a new array with the existing items and new item
+      };
+    },
+    resetMember: (state) => initialState, // Reset action
   },
 });
 export const {
-  setAllMembers,
+  setLoading,
+  setErrmessage,
   setSingleMember,
   setAllAdminMembers,
   setSearchMemberByText,
-  setAllAppliedMembers,
   setSearchedQuery,
+  addMember,
+  resetMember,
 } = memberSlice.actions;
 export default memberSlice.reducer;

@@ -22,7 +22,7 @@ const useGetMemberById = (id) => {
       }
     };
     fetchSingleMember();
-  }, [id, dispatch]);
+  }, [id]);
 };
 
 export default useGetMemberById;

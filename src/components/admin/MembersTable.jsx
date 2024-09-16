@@ -16,21 +16,20 @@ import { Button } from "../ui/button";
 import { MEMBER_API_END_POINT } from "@/utils/constant";
 import axios from "axios";
 import { toast } from "sonner";
-import { setAllAdminMembers } from "../../redux/memberSlice";
+import { setAllAdminMembers, setLoading } from "../../redux/memberSlice";
 import { useNavigate } from "react-router-dom";
 //import MembershipAssignDialog from "./MembershipAssignDialog";
 
 const MembersTable = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { allAdminMembers, searchMemberByText } = useSelector(
+  const { allAdminMembers, searchMemberByText, loading } = useSelector(
     (store) => store.member
   );
   const [filterMembers, setFilterMembers] = useState(allAdminMembers);
   const [open, setOpen] = useState(false);
   //const [openAssignMembership, setOpenAssignMembership] = useState(false);
   const [selectedMember, setSelectedMember] = useState("");
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const filteredMembers = allAdminMembers.filter((member) => {
@@ -62,7 +61,6 @@ const MembersTable = () => {
 
   const removeHandler = async (id) => {
     try {
-      setLoading(true);
       const res = await axios.delete(`${MEMBER_API_END_POINT}/${id}`, {
         headers: {
           "Content-Type": "application/json",
@@ -81,7 +79,7 @@ const MembersTable = () => {
     } catch (error) {
       toast.error(error.message);
     } finally {
-      setLoading(false);
+      dispatch(setLoading(false));
     }
   };
   useEffect(() => {
@@ -226,16 +224,14 @@ const MembersTable = () => {
           ))}
         </TableBody>
       </Table>
-      <UpdateMemberDialog
-        open={open}
-        setOpen={setOpen}
-        selectedMember={selectedMember}
-      />
-      {/* <MembershipAssignDialog
-        open={openAssignMembership}
-        setOpen={setOpenAssignMembership}
-        selectedMember={selectedMember}
-      /> */}
+
+      {selectedMember && (
+        <UpdateMemberDialog
+          open={open}
+          setOpen={setOpen}
+          selectedMember={selectedMember}
+        />
+      )}
     </div>
   );
 };

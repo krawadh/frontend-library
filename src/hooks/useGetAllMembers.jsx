@@ -12,7 +12,6 @@ const useGetAllMembers = () => {
         const res = await axios.get(`${MEMBER_API_END_POINT}`, {
           //withCredentials: true,
         });
-        console.log("all members", res.data);
         if (res.data.success) {
           dispatch(setAllAdminMembers(res.data.members));
         }

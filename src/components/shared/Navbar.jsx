@@ -1,15 +1,19 @@
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { toast } from "sonner";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { LogOut, User2 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
 import { USER_API_END_POINT } from "@/utils/constant";
-import { setUser } from "@/redux/authSlice";
-import { toast } from "sonner";
-import { useEffect } from "react";
+
 import { persistor } from "../../redux/store"; // Adjust the import path as needed
+import { resetMembership } from "@/redux/membershipSlice";
+import { resetSeat } from "@/redux/seatSlice";
+import { resetAuth } from "@/redux/authSlice";
+import { resetMember } from "@/redux/memberSlice";
 
 const Navbar = () => {
   const { user } = useSelector((store) => store.auth);
@@ -25,9 +29,13 @@ const Navbar = () => {
       const res = await axios.get(`${USER_API_END_POINT}/logout`, {
         // withCredentials: true
       });
-      console.log(res.data);
+
       if (res.data.success) {
-        dispatch(setUser(null));
+        //dispatch(setUser(null));
+        dispatch(resetAuth()); // Reset auth slice
+        dispatch(resetMember()); // Reset auth member
+        dispatch(resetMembership()); // Reset auth membership
+        dispatch(resetSeat()); // Reset auth seat
         persistor.purge().then(() => {
           console.log("Persisted state cleared on logout!");
         });

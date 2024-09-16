@@ -58,7 +58,7 @@ const SeatCreate = () => {
 
   return (
     <div>
-      <Navbar />
+      {/* <Navbar /> */}
       <div className="flex items-center justify-center w-full my-5 px-4">
         <form
           onSubmit={submitHandler}
