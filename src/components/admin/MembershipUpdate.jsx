@@ -72,12 +72,14 @@ const MembershipUpdate = () => {
   };
 
   useEffect(() => {
-    setInput({
-      membershipType: singleMembership.membershipType || "",
-      fee: singleMembership.fee || "",
-      duration: singleMembership.duration || "",
-      description: singleMembership.description || "",
-    });
+    if (singleMembership) {
+      setInput({
+        membershipType: singleMembership?.membershipType || "",
+        fee: singleMembership?.fee || "",
+        duration: singleMembership?.duration || "",
+        description: singleMembership?.description || "",
+      });
+    }
   }, [singleMembership]);
 
   return (
