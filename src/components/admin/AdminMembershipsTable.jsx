@@ -116,7 +116,7 @@ const AdminMembershipsTable = () => {
                       <Edit2 className="w-4" />
                       <span>Edit</span>
                     </div>
-                    {loading ? (
+                    {/* {loading ? (
                       <Button className="w-full my-4">
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please
                         wait
@@ -129,7 +129,7 @@ const AdminMembershipsTable = () => {
                         <Trash2 className="w-4" />
                         <span>Remove</span>
                       </div>
-                    )}
+                    )} */}
                   </PopoverContent>
                 </Popover>
               </TableCell>
