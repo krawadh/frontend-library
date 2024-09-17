@@ -82,28 +82,7 @@ const MembersTable = () => {
       dispatch(setLoading(false));
     }
   };
-  useEffect(() => {
-    filterMembers.map((mem) => {
-      console.log(
-        "member---------",
-        mem?.reservations?.[0]?.reservationStartTime
-          ? mem?.reservations?.[0]?.reservationStartTime
-          : "--"
-      );
-      console.log(
-        "member---------",
-        mem?.reservations?.[0]?.reservationEndTime
-          ? new Date(mem?.reservations?.[0]?.reservationEndTime)
-          : "--"
-      );
-      console.log(
-        "seat---------",
-        mem?.reservations?.[0]?.seat
-          ? mem?.reservations?.[0]?.seat?.seatNumber
-          : "--"
-      );
-    });
-  }, []);
+
   return (
     <div>
       <Table>
@@ -141,11 +120,19 @@ const MembersTable = () => {
               </TableCell>
               <TableCell>
                 {(() => {
-                  if (member?.reservations?.[0]?.seat) {
-                    //const { seatNumber } = member.reservations.[0].seat;
-                    return `${member?.reservations?.[0]?.seat?.seatNumber}`;
+                  if (member?.reservations?.[0]) {
+                    const startTime = new Date(
+                      member?.reservations?.[0]?.reservationStartTime
+                    );
+                    const endTime = new Date(
+                      member?.reservations?.[0]?.reservationEndTime
+                    );
+
+                    return `${
+                      member?.reservations?.[0]?.seat?.seatNumber
+                    } (${startTime.getHours()}Hrs - ${endTime.getHours()}Hrs)`;
                   }
-                  return "";
+                  return "---";
                 })()}
               </TableCell>
               {(() => {

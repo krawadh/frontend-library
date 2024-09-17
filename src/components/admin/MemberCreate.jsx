@@ -28,6 +28,7 @@ const MemberCreate = () => {
   });
 
   const changeEventHandler = (e) => {
+    console.log(e.target.name, e.target.value);
     setInput({ ...input, [e.target.name]: e.target.value });
   };
   // const changeFileHandler = (e) => {
@@ -80,11 +81,10 @@ const MemberCreate = () => {
   }, []);
   return (
     <div>
-      {/* <Navbar /> */}
-      <div className="flex items-center justify-center max-w-7xl mx-auto">
+      <div className="flex items-center justify-center w-screen my-8 px-4 sm:px-6 lg:px-8">
         <form
           onSubmit={submitHandler}
-          className="w-1/2 border border-gray-200 rounded-md p-4 my-10"
+          className="p-4 sm:p-8 max-w-lg sm:max-w-2xl lg:max-w-4xl w-full border border-gray-200 shadow-lg rounded-md"
         >
           <div className="flex justify-between py-4">
             <h1 className="font-bold text-xl">Add New Member</h1>
@@ -96,46 +96,51 @@ const MemberCreate = () => {
               <ArrowLeft /> Back
             </Button>
           </div>
-          <div className="my-2">
-            <Label>First Name</Label>
-            <Input
-              type="text"
-              value={input.firstName}
-              name="firstName"
-              onChange={changeEventHandler}
-              placeholder="Enter First Name"
-            />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label>First Name</Label>
+              <Input
+                type="text"
+                value={input.firstName}
+                name="firstName"
+                onChange={changeEventHandler}
+                placeholder="Enter First Name"
+              />
+            </div>
+            <div>
+              <Label>Last Name</Label>
+              <Input
+                type="text"
+                value={input.lastName}
+                name="lastName"
+                onChange={changeEventHandler}
+                placeholder="Enter Last Name"
+              />
+            </div>
           </div>
-          <div className="my-2">
-            <Label>Last Name</Label>
-            <Input
-              type="text"
-              value={input.lastName}
-              name="lastName"
-              onChange={changeEventHandler}
-              placeholder="Enter Last Name"
-            />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-4">
+            <div className="my-2">
+              <Label>Email</Label>
+              <Input
+                type="email"
+                value={input.email}
+                name="email"
+                onChange={changeEventHandler}
+                placeholder="Enter Email "
+              />
+            </div>
+            <div className="my-2">
+              <Label>Phone Number</Label>
+              <Input
+                type="text"
+                value={input.phone}
+                name="phone"
+                onChange={changeEventHandler}
+                placeholder="Enter Phone No."
+              />
+            </div>
           </div>
-          <div className="my-2">
-            <Label>Email</Label>
-            <Input
-              type="email"
-              value={input.email}
-              name="email"
-              onChange={changeEventHandler}
-              placeholder="Enter Email "
-            />
-          </div>
-          <div className="my-2">
-            <Label>Phone Number</Label>
-            <Input
-              type="text"
-              value={input.phone}
-              name="phone"
-              onChange={changeEventHandler}
-              placeholder="Enter Phone No."
-            />
-          </div>
+
           {/* <div className="my-2">
             <Label>Password</Label>
             <Input
@@ -146,7 +151,7 @@ const MemberCreate = () => {
               placeholder="password"
             />
           </div> */}
-          <div className="flex items-center justify-between">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-4">
             <RadioGroup className="flex items-center gap-4 my-5">
               <div className="flex items-center space-x-2">
                 <Input
@@ -157,18 +162,18 @@ const MemberCreate = () => {
                   onChange={changeEventHandler}
                   className="cursor-pointer"
                 />
-                <Label htmlFor="r1">Male</Label>
+                <Label htmlFor="gender">Male</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <Input
                   type="radio"
                   name="gender"
                   value="Female"
-                  checked={input.role === "Female"}
+                  checked={input.gender === "Female"}
                   onChange={changeEventHandler}
                   className="cursor-pointer"
                 />
-                <Label htmlFor="r2">Female</Label>
+                <Label htmlFor="gender">Female</Label>
               </div>
             </RadioGroup>
           </div>

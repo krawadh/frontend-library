@@ -19,10 +19,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-
-import Navbar from "../shared/Navbar";
-import TimePickerDemo from "../ui/TimePickerDemo";
 import { useForm, Controller } from "react-hook-form"; // Import react-hook-form
+
+import TimePickerDemo from "../ui/TimePickerDemo";
 
 const AssignSeat = () => {
   const { control, handleSubmit } = useForm(); // Setup form control with react-hook-form
@@ -44,14 +43,10 @@ const AssignSeat = () => {
     seat: "",
     reservedBy: selectedMember,
     reservationStartTime: "",
-    reservationEndTime: "", // Add this to keep track of the seat
+    reservationEndTime: "",
   });
-  const [startDate, setStartDate] = useState(new Date()); // Date state for start time
-  const [endDate, setEndDate] = useState(new Date()); // Separate state for end time
-
-  // const changeEventHandler = (e) => {
-  //   setInput({ ...input, [e.target.name]: e.target.value });
-  // };
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
 
   const selectChangeHandler = (value, field) => {
     setInput({ ...input, [field]: value });
@@ -63,22 +58,19 @@ const AssignSeat = () => {
     const updatedInput = {
       ...input,
       reservationStartTime: startDate.toString(),
-      reservationEndTime: endDate.toString(), // Use the correct date state
+      reservationEndTime: endDate.toString(),
     };
-    console.log("updatedInput", updatedInput);
     try {
       const res = await axios.patch(
         `${MEMBER_API_END_POINT}/assignSeat/${selectedMember}`,
         updatedInput
       );
       if (res.data.success) {
-        console.log("hello.....", res?.data?.updatedMember);
         const updatedMembers = updateMember(
           allAdminMembers,
           selectedMember,
           res?.data?.updatedMember
         );
-        console.log("updated membrer-----", updatedMembers);
         dispatch(setAllAdminMembers(updatedMembers));
         navigate("/admin/members");
         toast.success(res.data.message);
@@ -103,25 +95,18 @@ const AssignSeat = () => {
 
   useEffect(() => {
     if (singleMember) {
-      // Pre-populate with current time or specific time from singleMember if available
       const currentDate = new Date();
-      setStartDate(currentDate); // Default to current time for start
-      setEndDate(currentDate); // Default to current time for end
+      setStartDate(currentDate);
+      setEndDate(currentDate);
 
-      // Fetch and populate reserved seat data from API
       const fetchReservationByMember = async () => {
         try {
           const res = await axios.get(
-            `${MEMBER_API_END_POINT}/assignSeat/${selectedMember}`,
-            {
-              //withCredentials: true,
-            }
+            `${MEMBER_API_END_POINT}/assignSeat/${selectedMember}`
           );
           if (res.data.success) {
             setInput({ ...input, seat: res.data.reservedByMember[0].seat._id });
-            console.log("reservedByMember", res.data.reservedByMember[0]);
 
-            // If the reservation has specific start and end times, pre-fill them
             if (res.data.reservedByMember[0].reservationStartTime) {
               setStartDate(
                 new Date(res.data.reservedByMember[0].reservationStartTime)
@@ -144,11 +129,10 @@ const AssignSeat = () => {
 
   return (
     <div>
-      {/* <Navbar /> */}
-      <div className="flex items-center justify-center w-screen my-4">
+      <div className="flex items-center justify-center w-full my-4 px-4">
         <form
           onSubmit={handleSubmit(submitHandler)}
-          className="w-1/2 border border-gray-200 rounded-md p-4 my-10"
+          className="w-full max-w-4xl border border-gray-200 rounded-md p-4 my-10"
         >
           <div className="flex justify-between py-4">
             <h1 className="font-bold text-xl">Assign Seat to Member</h1>
@@ -162,7 +146,7 @@ const AssignSeat = () => {
             </Button>
           </div>
           <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-4">
               <Label htmlFor="fullName" className="text-right">
                 Name
               </Label>
@@ -170,21 +154,21 @@ const AssignSeat = () => {
                 name="fullName"
                 type="text"
                 value={`${singleMember?.firstName} ${singleMember?.lastName}`}
-                className="col-span-3 w-[280px]"
+                className="col-span-3 w-full sm:w-[280px]"
                 disabled
               />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-4">
               <Label htmlFor="seat" className="text-right">
                 Seat Number
               </Label>
               <Select
-                className="col-span-3 w-[280px]"
+                className="col-span-3 w-full sm:w-[280px]"
                 name="seat"
                 value={input.seat}
                 onValueChange={(value) => selectChangeHandler(value, "seat")}
               >
-                <SelectTrigger className="w-[278px] z-0">
+                <SelectTrigger className="w-full sm:w-[278px] z-0">
                   <SelectValue placeholder="Select a Seat" />
                 </SelectTrigger>
                 <SelectContent>
@@ -198,11 +182,11 @@ const AssignSeat = () => {
                 </SelectContent>
               </Select>
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-4">
               <Label htmlFor="startTime" className="text-right">
                 Start Time
               </Label>
-              <div className="p-3 border-t border-border">
+              <div className="p-3 border-t border-border col-span-3">
                 <Controller
                   name="startTime"
                   control={control}
@@ -210,7 +194,7 @@ const AssignSeat = () => {
                     <TimePickerDemo
                       setDate={(date) => {
                         field.onChange(date);
-                        setStartDate(date); // Update startDate state
+                        setStartDate(date);
                       }}
                       date={field.value || startDate}
                     />
@@ -218,11 +202,11 @@ const AssignSeat = () => {
                 />
               </div>
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-4">
               <Label htmlFor="endTime" className="text-right">
                 End Time
               </Label>
-              <div className="p-3 border-t border-border">
+              <div className="p-3 border-t border-border col-span-3">
                 <Controller
                   name="endTime"
                   control={control}
@@ -230,7 +214,7 @@ const AssignSeat = () => {
                     <TimePickerDemo
                       setDate={(date) => {
                         field.onChange(date);
-                        setEndDate(date); // Update endDate state
+                        setEndDate(date);
                       }}
                       date={field.value || endDate}
                     />

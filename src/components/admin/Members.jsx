@@ -46,20 +46,24 @@ const Members = () => {
   }, [input]);
 
   const handleInputChange = (e) => setInput(e.target.value);
-  const handleNewMemberClick = () => navigate("/admin/member/create");
 
   return (
     <div>
       {/* <Navbar /> */}
-      <div className="max-w-6xl mx-auto my-10">
-        <div className="flex items-center justify-between my-5">
+      <div className="max-w-6xl mx-auto my-10 px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col sm:flex-row items-center justify-between my-5 gap-4">
           <Input
-            className="w-80"
+            className="w-full sm:w-80"
             placeholder="Filter by name"
             value={input}
             onChange={handleInputChange}
           />
-          <Button onClick={handleNewMemberClick}>New Member</Button>
+          <Button
+            className="w-full sm:w-auto"
+            onClick={() => navigate("/admin/member/create")}
+          >
+            New Member
+          </Button>
         </div>
         {loading ? <Loader /> : <MembersTable />}
       </div>
