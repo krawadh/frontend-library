@@ -64,89 +64,51 @@ const appRouter = createBrowserRouter([
     path: "/admin",
     element: (
       <ProtectedRoute>
-        <AdminLayout />
+        <Suspense fallback={<div>Loading...</div>}>
+          <AdminLayout />
+        </Suspense>
       </ProtectedRoute>
     ),
     children: [
       {
         path: "seats",
-        element: (
-          <Suspense fallback={<div>Loading...</div>}>
-            <AdminSeats />
-          </Suspense>
-        ),
+        element: <AdminSeats />,
       },
       {
         path: "seat/create",
-        element: (
-          <Suspense fallback={<div>Loading...</div>}>
-            <SeatCreate />
-          </Suspense>
-        ),
+        element: <SeatCreate />,
       },
       {
         path: "seat/:id",
-        element: (
-          <Suspense fallback={<div>Loading...</div>}>
-            <SeatUpdate />
-          </Suspense>
-        ),
+        element: <SeatUpdate />,
       },
       {
         path: "memberships",
-        element: (
-          <Suspense fallback={<div>Loading...</div>}>
-            <AdminMemberships />
-          </Suspense>
-        ),
+        element: <AdminMemberships />,
       },
       {
         path: "membership/create",
-        element: (
-          <Suspense fallback={<div>Loading...</div>}>
-            <MembershipCreate />
-          </Suspense>
-        ),
+        element: <MembershipCreate />,
       },
       {
         path: "membership/:id",
-        element: (
-          <Suspense fallback={<div>Loading...</div>}>
-            <MembershipUpdate />
-          </Suspense>
-        ),
+        element: <MembershipUpdate />,
       },
       {
         path: "members",
-        element: (
-          <Suspense fallback={<div>Loading...</div>}>
-            <Members />
-          </Suspense>
-        ),
+        element: <Members />,
       },
       {
         path: "member/create",
-        element: (
-          <Suspense fallback={<div>Loading...</div>}>
-            <MemberCreate />
-          </Suspense>
-        ),
+        element: <MemberCreate />,
       },
       {
         path: "membershipAssign/:id",
-        element: (
-          <Suspense fallback={<div>Loading...</div>}>
-            <AssignMembership />
-          </Suspense>
-        ),
+        element: <AssignMembership />,
       },
       {
         path: "seatAssign/:id",
-        element: (
-          <Suspense fallback={<div>Loading...</div>}>
-            <AssignSeat />
-          </Suspense>
-        ),
+        element: <AssignSeat />,
       },
     ],
   },

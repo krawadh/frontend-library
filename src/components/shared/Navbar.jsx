@@ -20,10 +20,6 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    console.log(user);
-  }, [user]);
-
   const logoutHandler = async () => {
     try {
       const res = await axios.get(`${USER_API_END_POINT}/logout`, {
@@ -39,7 +35,7 @@ const Navbar = () => {
         persistor.purge().then(() => {
           console.log("Persisted state cleared on logout!");
         });
-        navigate("/");
+        navigate("/", { replace: true });
         toast.success(res.data.message);
       }
     } catch (error) {

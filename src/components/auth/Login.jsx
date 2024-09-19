@@ -37,13 +37,11 @@ const Login = () => {
         //withCredentials: true,
       });
       if (res.data.success) {
-        console.log(res.data);
         dispatch(setUser(res.data.user));
-        navigate("/admin/members");
+        navigate("/admin/members", { replace: true });
         toast.success(res.data.message);
       }
     } catch (error) {
-      console.log(error);
       toast.error(error.response.data.message);
     } finally {
       dispatch(setLoading(false));
@@ -81,6 +79,7 @@ const Login = () => {
               value={input.password}
               name="password"
               onChange={changeEventHandler}
+              autoComplete=""
               placeholder="Enter password"
             />
           </div>
@@ -89,6 +88,7 @@ const Login = () => {
               <div className="flex items-center space-x-2">
                 <Input
                   type="radio"
+                  id="r1"
                   name="role"
                   value="Admin"
                   checked={input.role === "Admin"}
@@ -100,6 +100,7 @@ const Login = () => {
               <div className="flex items-center space-x-2">
                 <Input
                   type="radio"
+                  id="r2"
                   name="role"
                   value="Member"
                   checked={input.role === "Member"}
@@ -112,7 +113,6 @@ const Login = () => {
           </div>
           {loading ? (
             <Button className="w-full my-4">
-              {" "}
               <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait{" "}
             </Button>
           ) : (
@@ -121,12 +121,13 @@ const Login = () => {
             </Button>
           )}
           <span className="text-sm">
-            Don't have an account?{" "}
+            Don't have an account?
             <Link to="/signup" className="text-blue-600">
               Signup
             </Link>
           </span>
         </form>
+        ;
       </div>
     </div>
   );
