@@ -33,12 +33,8 @@ const AdminSeatsTable = () => {
         return true;
       }
       return (
-        seat?.seatNumber
-          ?.toLowerCase()
-          .includes(searchSeatByText.toLowerCase()) ||
-        seat?.reservedBy?.firstName
-          .toLowerCase()
-          .includes(searchSeatByText.toLowerCase())
+        seat?.seatNumber.includes(searchSeatByText) ||
+        seat?.seatType.toLowerCase().includes(searchSeatByText.toLowerCase())
       );
     });
     setFilterSeats(filteredSeats);
