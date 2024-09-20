@@ -126,10 +126,16 @@ const MembersTable = () => {
                     const endTime = new Date(
                       member?.reservations?.[0]?.reservationEndTime
                     );
+                    const date = new Date();
+                    const isTimeover =
+                      date.getHours() > endTime.getHours() ? true : false;
 
-                    return `${
-                      member?.reservations?.[0]?.seat?.seatNumber
-                    } (${startTime.getHours()}Hrs - ${endTime.getHours()}Hrs)`;
+                    return (
+                      <div className={isTimeover ? "bg-red-500" : ""}>
+                        {member?.reservations?.[0]?.seat?.seatNumber} (
+                        {startTime.getHours()}Hrs - {endTime.getHours()}Hrs)
+                      </div>
+                    );
                   }
                   return "---";
                 })()}
