@@ -12,7 +12,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Edit2, Loader2, MoreHorizontal, Trash2, Target } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import UpdateMemberDialog from "./UpdateMemberDialog";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { MEMBER_API_END_POINT } from "@/utils/constant";
 import axios from "axios";
 import { toast } from "sonner";
@@ -69,10 +69,9 @@ const MembersTable = () => {
       });
       if (res.data.success) {
         const afterDeleted = filterMembers.filter((e) => {
-          console.log(e._id, id);
           return e._id !== id;
         });
-        console.log("after deletion---", afterDeleted);
+
         toast.success(res.data.message);
         dispatch(setAllAdminMembers(afterDeleted));
       }

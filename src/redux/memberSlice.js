@@ -33,7 +33,6 @@ const memberSlice = createSlice({
       state.searchedQuery = action.payload;
     },
     addMember: (state, action) => {
-      console.log(action.payload);
       return {
         ...state,
         allAdminMembers: [...state.allAdminMembers, action.payload], // Create a new array with the existing items and new item
@@ -43,6 +42,7 @@ const memberSlice = createSlice({
   },
 });
 export const {
+  resetMember,
   setLoading,
   setErrmessage,
   setSingleMember,
@@ -50,6 +50,5 @@ export const {
   setSearchMemberByText,
   setSearchedQuery,
   addMember,
-  resetMember,
 } = memberSlice.actions;
 export default memberSlice.reducer;

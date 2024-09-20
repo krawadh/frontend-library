@@ -21,7 +21,7 @@ const Members = () => {
   const [input, setInput] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { loading, allAdminMembers } = useSelector((store) => store.member);
+  const { loading } = useSelector((store) => store.member);
 
   // Fetch all members and dispatch filter input to the Redux store
   useEffect(() => {
@@ -32,14 +32,14 @@ const Members = () => {
         });
         if (res.data.success) {
           dispatch(setAllAdminMembers(res.data.members));
+          dispatch(setLoading(false));
         }
       } catch (error) {
         console.log(error);
       }
     };
     fetchMembers();
-    dispatch(setLoading(false));
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(setSearchMemberByText(input));

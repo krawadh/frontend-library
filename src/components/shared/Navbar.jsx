@@ -13,7 +13,7 @@ import { persistor } from "../../redux/store"; // Adjust the import path as need
 import { resetMembership } from "@/redux/membershipSlice";
 import { resetSeat } from "@/redux/seatSlice";
 import { resetAuth } from "@/redux/authSlice";
-import { resetMember } from "@/redux/memberSlice";
+import { resetMember } from "../../redux/memberSlice";
 
 const Navbar = () => {
   const { user } = useSelector((store) => store.auth);
@@ -35,7 +35,7 @@ const Navbar = () => {
         persistor.purge().then(() => {
           console.log("Persisted state cleared on logout!");
         });
-        navigate("/", { replace: true });
+        navigate("/login", { replace: true });
         toast.success(res.data.message);
       }
     } catch (error) {
