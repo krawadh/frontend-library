@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -87,6 +88,9 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
         >
           <DialogHeader>
             <DialogTitle>Update Profile</DialogTitle>
+            <DialogDescription>
+              Update the details of the loggedin user.
+            </DialogDescription>
           </DialogHeader>
           <form onSubmit={submitHandler}>
             <div className="grid gap-4 py-4">

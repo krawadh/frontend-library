@@ -18,7 +18,6 @@ import useGetMemberById from "@/hooks/useGetMemberById";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { setAllAdminMembers } from "../../redux/memberSlice";
-//import useGetAllMembers from "@/hooks/useGetAllMembers";
 
 const UpdateMemberDialog = ({ open, setOpen, selectedMember }) => {
   const dispatch = useDispatch();
@@ -36,6 +35,8 @@ const UpdateMemberDialog = ({ open, setOpen, selectedMember }) => {
     lastName: "",
     email: "",
     phone: "",
+    gender: "",
+    profileImage: "",
   });
 
   // Update input state when singleMember changes
@@ -46,26 +47,43 @@ const UpdateMemberDialog = ({ open, setOpen, selectedMember }) => {
         lastName: singleMember.lastName || "",
         email: singleMember.email || "",
         phone: singleMember.phone || "",
+        gender: singleMember?.gender || "",
       });
     }
   }, [singleMember]);
 
-  // Handle input changes
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
 
-  // Handle form submission
+  const changeFileHandler = (e) => {
+    setInput({ ...input, profileImage: e.target.files?.[0] });
+  };
+
   const submitHandler = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
+    formData.append("firstName", input.firstName);
+    formData.append("lastName", input.lastName);
+    formData.append("email", input.email);
+    formData.append("phone", input.phone);
+    formData.append("gender", input.gender);
+
+    if (input.profileImage) {
+      formData.append("profileImage", input.profileImage);
+    }
     try {
       setLoading(true);
       const res = await axios.patch(
         `${MEMBER_API_END_POINT}/${selectedMember}`,
-        input
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
       if (res.data.success) {
-        // Update the members array
         const updatedMembers = updateMember(
           allAdminMembers,
           selectedMember,
@@ -84,7 +102,6 @@ const UpdateMemberDialog = ({ open, setOpen, selectedMember }) => {
     }
   };
 
-  // Reset form and dialog state when closed
   const handleClose = () => {
     setOpen(false);
     setInput({
@@ -92,20 +109,19 @@ const UpdateMemberDialog = ({ open, setOpen, selectedMember }) => {
       lastName: "",
       email: "",
       phone: "",
+      profileImage: "",
     });
   };
 
-  // Function to update a specific member
   const updateMember = (membersArray, memberId, updatedData) => {
     return membersArray.map((member) => {
       if (member._id === memberId) {
-        // Update the specific fields you want to change
         return {
           ...member,
-          ...updatedData, // merging updated data into the member object
+          ...updatedData,
         };
       }
-      return member; // return the other members unchanged
+      return member;
     });
   };
 
@@ -113,7 +129,7 @@ const UpdateMemberDialog = ({ open, setOpen, selectedMember }) => {
     <div>
       <Dialog open={open} onOpenChange={handleClose}>
         <DialogContent
-          className="sm:max-w-[425px]"
+          className="sm:max-w-[425px] md:max-w-[600px] w-full"
           onInteractOutside={handleClose}
         >
           <DialogHeader>
@@ -124,8 +140,8 @@ const UpdateMemberDialog = ({ open, setOpen, selectedMember }) => {
           </DialogHeader>
           <form onSubmit={submitHandler}>
             <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="firstName" className="text-right">
+              <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-4">
+                <Label htmlFor="firstName" className="sm:text-right">
                   First Name
                 </Label>
                 <Input
@@ -137,8 +153,8 @@ const UpdateMemberDialog = ({ open, setOpen, selectedMember }) => {
                   className="col-span-3"
                 />
               </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="lastName" className="text-right">
+              <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-4">
+                <Label htmlFor="lastName" className="sm:text-right">
                   Last Name
                 </Label>
                 <Input
@@ -150,8 +166,8 @@ const UpdateMemberDialog = ({ open, setOpen, selectedMember }) => {
                   className="col-span-3"
                 />
               </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="email" className="text-right">
+              <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-4">
+                <Label htmlFor="email" className="sm:text-right">
                   Email
                 </Label>
                 <Input
@@ -163,8 +179,8 @@ const UpdateMemberDialog = ({ open, setOpen, selectedMember }) => {
                   className="col-span-3"
                 />
               </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="phone" className="text-right">
+              <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-4">
+                <Label htmlFor="phone" className="sm:text-right">
                   Phone
                 </Label>
                 <Input
@@ -173,6 +189,48 @@ const UpdateMemberDialog = ({ open, setOpen, selectedMember }) => {
                   value={input.phone}
                   onChange={changeEventHandler}
                   className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-4">
+                <Label htmlFor="gender" className="sm:text-right">
+                  Gender
+                </Label>
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center space-x-2">
+                    <Input
+                      type="radio"
+                      name="gender"
+                      value="Male"
+                      checked={input.gender === "Male"}
+                      onChange={changeEventHandler}
+                      className="cursor-pointer"
+                    />
+                    <Label>Male</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Input
+                      type="radio"
+                      name="gender"
+                      value="Female"
+                      checked={input.gender === "Female"}
+                      onChange={changeEventHandler}
+                      className="cursor-pointer"
+                    />
+                    <Label>Female</Label>
+                  </div>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-4">
+                <Label htmlFor="file" className="sm:text-right">
+                  Profile Photo
+                </Label>
+                <Input
+                  id="file"
+                  name="profileImage"
+                  type="file"
+                  accept="image/*"
+                  onChange={changeFileHandler}
+                  className="col-span-3 w-full"
                 />
               </div>
             </div>

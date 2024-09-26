@@ -18,6 +18,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { setAllAdminMembers, setLoading } from "../../redux/memberSlice";
 import { useNavigate } from "react-router-dom";
+import { Avatar, AvatarImage } from "../ui/avatar";
 //import MembershipAssignDialog from "./MembershipAssignDialog";
 
 const MembersTable = () => {
@@ -104,8 +105,23 @@ const MembersTable = () => {
           {filterMembers?.map((member) => (
             <TableRow key={member?._id}>
               <TableCell>
-                {member?.firstName} {member?.lastName}
+                <div className="flex items-center space-x-3">
+                  <Avatar className="cursor-pointer w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14">
+                    <AvatarImage
+                      src={
+                        member?.profile?.profilePhoto ||
+                        "https://github.com/shadcn.png"
+                      }
+                      className="rounded-full object-cover"
+                      alt={`${member?.firstName}'s profile`}
+                    />
+                  </Avatar>
+                  <div>
+                    {member?.firstName} {member?.lastName}
+                  </div>
+                </div>
               </TableCell>
+
               <TableCell>{member?.email}</TableCell>
               <TableCell>{member?.phone}</TableCell>
               <TableCell>
