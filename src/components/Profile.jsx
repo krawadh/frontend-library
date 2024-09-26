@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Avatar, AvatarImage } from "./ui/avatar";
-import { useNavigate } from "react-router-dom";
+import { Loader2, Pen } from "lucide-react";
 import Navbar from "./shared/Navbar";
-import { Loader2 } from "lucide-react";
+import UpdateProfileDialog from "./UpdateProfileDialog";
+import { Button } from "./ui/button";
 
 const ProfilePage = () => {
+  const [open, setOpen] = useState(false);
   const { user } = useSelector((store) => store.auth);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -13,11 +15,11 @@ const ProfilePage = () => {
   useEffect(() => {
     setProfile(user);
     setLoading(false);
-  }, []);
+  }, [user]);
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center min-h-screen">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
     );
@@ -31,25 +33,32 @@ const ProfilePage = () => {
     <div className="bg-gray-100 min-h-screen">
       <Navbar />
       <div className="flex justify-center p-4">
-        <div className="bg-white p-6 rounded-lg shadow-md max-w-md w-full">
-          <div className="flex items-center mb-4">
+        <div className="bg-white p-6 rounded-lg shadow-md w-full md:max-w-lg">
+          <div className="flex flex-col md:flex-row items-center mb-4">
             <Avatar className="w-24 h-24">
               <AvatarImage
                 src={
-                  user?.profile?.profilePhoto
-                    ? user.profile.profilePhoto
-                    : "https://github.com/shadcn.png"
+                  user?.profile?.profilePhoto || "https://github.com/shadcn.png"
                 }
                 alt={user.firstName || "User"}
               />
             </Avatar>
-            <div className="ml-4">
-              <h2 className="text-2xl font-semibold">{user.firstName}</h2>
+            <div className="mt-4 md:mt-0 md:ml-4 text-center md:text-left">
+              <h2 className="text-2xl font-semibold">{`${user.firstName} ${user.lastName}`}</h2>
               <p className="text-sm text-gray-600">
                 {user.bio || "No bio available"}
               </p>
             </div>
+            <Button
+              onClick={() => setOpen(true)}
+              variant="outline"
+              className="mt-4 md:mt-0 ml-4"
+              aria-label="Edit Profile"
+            >
+              <Pen className="h-4 w-4" />
+            </Button>
           </div>
+
           <div className="flex flex-col space-y-4">
             <div>
               <h3 className="font-medium text-lg">Email</h3>
@@ -66,14 +75,9 @@ const ProfilePage = () => {
               </p>
             </div>
           </div>
-          {/* <Button
-            onClick={() => navigate(`/edit-profile/${user._id}`)}
-            className="w-full mt-4"
-          >
-            <Edit2 className="mr-2 h-4 w-4" /> Edit Profile
-          </Button> */}
         </div>
       </div>
+      <UpdateProfileDialog open={open} setOpen={setOpen} />
     </div>
   );
 };

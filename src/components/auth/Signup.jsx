@@ -21,7 +21,7 @@ const Signup = () => {
     password: "",
     gender: "",
     role: "",
-    //file: "",
+    profileImage: "",
   });
   const { loading, user } = useSelector((store) => store.auth);
   const dispatch = useDispatch();
@@ -30,9 +30,9 @@ const Signup = () => {
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
-  // const changeFileHandler = (e) => {
-  //   setInput({ ...input, file: e.target.files?.[0] });
-  // };
+  const changeFileHandler = (e) => {
+    setInput({ ...input, profileImage: e.target.files?.[0] });
+  };
   const submitHandler = async (e) => {
     e.preventDefault();
     const formData = new FormData(); //formdata object
@@ -43,15 +43,15 @@ const Signup = () => {
     formData.append("password", input.password);
     formData.append("gender", input.gender);
     formData.append("role", input.role);
-    if (input.file) {
-      formData.append("file", input.file);
+    if (input.profileImage) {
+      formData.append("profileImage", input.profileImage);
     }
     //console.log("formdata ......", formData);
     try {
       dispatch(setLoading(true));
-      const res = await axios.post(`${USER_API_END_POINT}/register`, input, {
-        //headers: { "Content-Type": "multipart/form-data" },
-        headers: { "Content-Type": "application/json" },
+      const res = await axios.post(`${USER_API_END_POINT}/register`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+        //headers: { "Content-Type": "application/json" },
       });
       if (res.data.success) {
         navigate("/login");
@@ -86,7 +86,7 @@ const Signup = () => {
               value={input.firstName}
               name="firstName"
               onChange={changeEventHandler}
-              placeholder="awadh"
+              placeholder="Enter first name"
             />
           </div>
           <div className="my-2">
@@ -96,7 +96,7 @@ const Signup = () => {
               value={input.lastName}
               name="lastName"
               onChange={changeEventHandler}
-              placeholder="kumar"
+              placeholder="Enter last name"
             />
           </div>
           <div className="my-2">
@@ -106,7 +106,7 @@ const Signup = () => {
               value={input.email}
               name="email"
               onChange={changeEventHandler}
-              placeholder="awadh@gmail.com"
+              placeholder="Enter email"
             />
           </div>
           <div className="my-2">
@@ -155,6 +155,7 @@ const Signup = () => {
               </div>
             </RadioGroup>
           </div>
+
           <div className="flex items-center justify-between">
             <RadioGroup className="flex items-center gap-4 my-5">
               <div className="flex items-center space-x-2">
@@ -189,6 +190,16 @@ const Signup = () => {
                 className="cursor-pointer"
               />
             </div> */}
+          </div>
+          <div className="flex items-center gap-2">
+            <Label>Profile</Label>
+            <Input
+              accept="image/*"
+              type="file"
+              name="profileImage"
+              onChange={changeFileHandler}
+              className="cursor-pointer"
+            />
           </div>
           {loading ? (
             <Button className="w-full my-4">

@@ -72,18 +72,15 @@ const UpdateMemberDialog = ({ open, setOpen, selectedMember }) => {
           res?.data?.updatedMember
         );
         dispatch(setAllAdminMembers(updatedMembers));
-        //useGetAllMembers();
+        setOpen(false);
         toast.success(res.data.message);
-        navigate("/admin/members");
       }
     } catch (error) {
-      console.log(error);
       const errorMessage =
         error.response?.data?.message || "An error occurred.";
       toast.error(errorMessage);
     } finally {
       setLoading(false);
-      setOpen(false);
     }
   };
 
