@@ -14,16 +14,17 @@ import { useDispatch, useSelector } from "react-redux";
 import UpdateMemberDialog from "./UpdateMemberDialog";
 import { Button } from "@/components/ui/button";
 import { MEMBER_API_END_POINT } from "@/utils/constant";
-import axios from "axios";
 import { toast } from "sonner";
 import { setAllAdminMembers, setLoading } from "../../redux/memberSlice";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarImage } from "../ui/avatar";
+import { useAxiosInterceptor } from "@/hooks/useAxiosInterceptor";
 //import MembershipAssignDialog from "./MembershipAssignDialog";
 
 const MembersTable = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const api = useAxiosInterceptor(); // Use the custom Axios instance with interceptors
   const { allAdminMembers, searchMemberByText, loading } = useSelector(
     (store) => store.member
   );
@@ -62,12 +63,7 @@ const MembersTable = () => {
 
   const removeHandler = async (id) => {
     try {
-      const res = await axios.delete(`${MEMBER_API_END_POINT}/${id}`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        //withCredentials: true,
-      });
+      const res = await api.delete(`${MEMBER_API_END_POINT}/${id}`);
       if (res.data.success) {
         const afterDeleted = filterMembers.filter((e) => {
           return e._id !== id;
@@ -106,7 +102,7 @@ const MembersTable = () => {
             <TableRow key={member?._id}>
               <TableCell>
                 <div className="flex items-center space-x-3">
-                  <Avatar className="cursor-pointer w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14">
+                  <Avatar className="cursor-pointer w-8 h-8 sm:w-10 sm:h-10 md:w-9 md:h-9 lg:w-10 lg:h-10">
                     <AvatarImage
                       src={
                         member?.profile?.profilePhoto ||

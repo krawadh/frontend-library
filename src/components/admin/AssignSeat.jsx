@@ -4,7 +4,6 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
 import { MEMBER_API_END_POINT } from "@/utils/constant";
 import useGetMemberById from "@/hooks/useGetMemberById";
 import useGetAllAdminSeats from "@/hooks/useGetAllAdminSeats";
@@ -22,6 +21,7 @@ import {
 import { useForm, Controller } from "react-hook-form"; // Import react-hook-form
 
 import TimePickerDemo from "../ui/TimePickerDemo";
+import { useAxiosInterceptor } from "@/hooks/useAxiosInterceptor";
 
 const AssignSeat = () => {
   const { control, handleSubmit } = useForm(); // Setup form control with react-hook-form
@@ -29,6 +29,7 @@ const AssignSeat = () => {
   const selectedMember = params.id;
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const api = useAxiosInterceptor(); // Use the custom Axios instance with interceptors
 
   useGetMemberById(params.id);
   useGetAllAdminSeats();
@@ -61,7 +62,7 @@ const AssignSeat = () => {
       reservationEndTime: endDate.toString(),
     };
     try {
-      const res = await axios.patch(
+      const res = await api.patch(
         `${MEMBER_API_END_POINT}/assignSeat/${selectedMember}`,
         updatedInput
       );
@@ -101,7 +102,7 @@ const AssignSeat = () => {
 
       const fetchReservationByMember = async () => {
         try {
-          const res = await axios.get(
+          const res = await api.get(
             `${MEMBER_API_END_POINT}/assignSeat/${selectedMember}`
           );
           if (res.data.success) {

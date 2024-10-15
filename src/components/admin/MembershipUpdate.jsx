@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Navbar from "../shared/Navbar";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
@@ -13,7 +12,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import axios from "axios";
 import {
   MEMBERSHIP_API_END_POINT,
   MEMBERSHIP_TYPE,
@@ -23,8 +21,10 @@ import { toast } from "sonner";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import useGetMembershipById from "@/hooks/useGetMembershipById";
+import { useAxiosInterceptor } from "@/hooks/useAxiosInterceptor";
 
 const MembershipUpdate = () => {
+  const api = useAxiosInterceptor(); // Use the custom Axios instance with interceptors
   const params = useParams();
   useGetMembershipById(params.id);
 
@@ -51,14 +51,9 @@ const MembershipUpdate = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      const res = await axios.patch(
+      const res = await api.patch(
         `${MEMBERSHIP_API_END_POINT}/${params.id}`,
-        input,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        input
       );
       if (res.data.success) {
         toast.success(res.data.message);

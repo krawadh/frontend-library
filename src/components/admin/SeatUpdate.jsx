@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Navbar from "../shared/Navbar";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
@@ -12,14 +11,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import axios from "axios";
+//import axios from "axios";
 import { SEAT_API_END_POINT } from "@/utils/constant";
 import { toast } from "sonner";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import useGetSeatById from "@/hooks/useGetSeatById";
+import { useAxiosInterceptor } from "@/hooks/useAxiosInterceptor";
 
 const SeatUpdate = () => {
+  const navigate = useNavigate();
+  const api = useAxiosInterceptor(); // Use the custom Axios instance with interceptors
   const params = useParams();
   useGetSeatById(params.id);
   const { singleSeat } = useSelector((store) => store.seat);
@@ -28,7 +30,6 @@ const SeatUpdate = () => {
     seatType: "",
   });
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
@@ -42,15 +43,7 @@ const SeatUpdate = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      const res = await axios.patch(
-        `${SEAT_API_END_POINT}/${params.id}`,
-        input,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const res = await api.patch(`${SEAT_API_END_POINT}/${params.id}`, input);
       if (res.data.success) {
         toast.success(res.data.message);
         navigate("/admin/seats");

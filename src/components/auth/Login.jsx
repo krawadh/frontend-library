@@ -5,22 +5,24 @@ import { Input } from "../ui/input";
 import { RadioGroup } from "../ui/radio-group";
 import { Button } from "../ui/button";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 import { USER_API_END_POINT } from "@/utils/constant";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading, setUser } from "@/redux/authSlice";
 import { Loader2 } from "lucide-react";
+import { useAxiosInterceptor } from "@/hooks/useAxiosInterceptor";
+import axios from "axios";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const [input, setInput] = useState({
-    email: "krawadh1@gmail.com",
+    email: "krawadh66@gmail.com",
     password: "password",
     role: "Admin",
   });
   const { loading, user } = useSelector((store) => store.auth);
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
@@ -31,10 +33,8 @@ const Login = () => {
     try {
       dispatch(setLoading(true));
       const res = await axios.post(`${USER_API_END_POINT}/login`, input, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        //withCredentials: true,
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
       });
       if (res.data.success) {
         dispatch(setUser(res.data.user));

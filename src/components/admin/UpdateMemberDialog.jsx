@@ -12,16 +12,16 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Loader2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
 import { MEMBER_API_END_POINT } from "@/utils/constant";
 import useGetMemberById from "@/hooks/useGetMemberById";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { setAllAdminMembers } from "../../redux/memberSlice";
+import { useAxiosInterceptor } from "@/hooks/useAxiosInterceptor";
 
 const UpdateMemberDialog = ({ open, setOpen, selectedMember }) => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const api = useAxiosInterceptor(); // Use the custom Axios instance with interceptors
 
   // Fetch member details when selectedMember changes
   useGetMemberById(selectedMember);
@@ -74,15 +74,7 @@ const UpdateMemberDialog = ({ open, setOpen, selectedMember }) => {
     }
     try {
       setLoading(true);
-      const res = await axios.patch(
-        `${MEMBER_API_END_POINT}/${selectedMember}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const res = await api.patch(`${MEMBER_API_END_POINT}/${selectedMember}`);
       if (res.data.success) {
         const updatedMembers = updateMember(
           allAdminMembers,

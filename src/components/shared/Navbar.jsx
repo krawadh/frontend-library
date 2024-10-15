@@ -1,55 +1,55 @@
-import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
-import { toast } from "sonner";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
 import { Avatar, AvatarImage } from "../ui/avatar";
-import { LogOut, User2 } from "lucide-react";
+import { Loader2, LogOut, User2 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { USER_API_END_POINT } from "@/utils/constant";
 
-import { persistor } from "../../redux/store"; // Adjust the import path as needed
-import { resetMembership } from "@/redux/membershipSlice";
-import { resetSeat } from "@/redux/seatSlice";
-import { resetAuth } from "@/redux/authSlice";
-import { resetMember } from "../../redux/memberSlice";
+import { logoutHandler } from "@/utils/auth";
+import { useAxiosInterceptor } from "@/hooks/useAxiosInterceptor";
 
 const Navbar = () => {
-  const { user } = useSelector((store) => store.auth);
+  const api = useAxiosInterceptor();
+  const { loading, user } = useSelector((store) => store.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const logoutHandler = async () => {
-    try {
-      const res = await axios.post(
-        `${USER_API_END_POINT}/logout`,
-        { userId: user.id },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          //withCredentials: true,
-        }
-      );
-
-      if (res.data.success) {
-        //dispatch(setUser(null));
-        dispatch(resetAuth()); // Reset auth slice
-        dispatch(resetMember()); // Reset auth member
-        dispatch(resetMembership()); // Reset auth membership
-        dispatch(resetSeat()); // Reset auth seat
-        persistor.purge().then(() => {
-          console.log("Persisted state cleared on logout!");
-        });
-        navigate("/login", { replace: true });
-        toast.success(res.data.message);
-      }
-    } catch (error) {
-      console.log(error);
-      toast.error(error.response.data.message);
-    }
+  const handleLogout = () => {
+    logoutHandler(user.id, dispatch, navigate, api);
   };
+
+  // const logoutHandler = async () => {
+  //   try {
+  //     dispatch(setLoading(true));
+  //     const res = await axios.post(
+  //       `${USER_API_END_POINT}/logout`,
+  //       { userId: user.id },
+  //       {
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         //withCredentials: true,
+  //       }
+  //     );
+
+  //     if (res.data.success) {
+  //       //dispatch(setUser(null));
+  //       dispatch(resetAuth()); // Reset auth slice
+  //       dispatch(resetMember()); // Reset auth member
+  //       dispatch(resetMembership()); // Reset auth membership
+  //       dispatch(resetSeat()); // Reset auth seat
+  //       persistor.purge().then(() => {
+  //         console.log("Persisted state cleared on logout!");
+  //       });
+  //       navigate("/login", { replace: true });
+  //       toast.success(res.data.message);
+  //       dispatch(setLoading(false));
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //     toast.error(error.response.data.message);
+  //   }
+  // };
 
   return (
     <div className="bg-gray-300 shadow-md">
@@ -160,14 +160,24 @@ const Navbar = () => {
                       </div>
                     )}
                     <div className="flex items-center gap-2">
-                      <LogOut />
-                      <Button
-                        onClick={logoutHandler}
-                        variant="link"
-                        className="text-sm text-blue-500"
-                      >
-                        Logout
-                      </Button>
+                      <LogOut />{" "}
+                      {loading ? (
+                        <Button
+                          variant="link"
+                          className="text-sm text-blue-500"
+                        >
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />{" "}
+                          Please wait
+                        </Button>
+                      ) : (
+                        <Button
+                          onClick={handleLogout}
+                          variant="link"
+                          className="text-sm text-blue-500"
+                        >
+                          Logout
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </div>

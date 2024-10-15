@@ -4,7 +4,6 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
 import { MEMBER_API_END_POINT } from "@/utils/constant";
 import useGetMemberById from "@/hooks/useGetMemberById";
 import useGetAllAdminMemberships from "@/hooks/useGetAllAdminMemberships";
@@ -28,12 +27,14 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import { useAxiosInterceptor } from "@/hooks/useAxiosInterceptor";
 
 const AssignMembership = () => {
   const params = useParams();
   const selectedMember = params.id;
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const api = useAxiosInterceptor(); // Use the custom Axios instance with interceptors
 
   useGetMemberById(params.id);
   useGetAllAdminMemberships();
@@ -64,7 +65,7 @@ const AssignMembership = () => {
     const updatedInput = { ...input, membershipExpiry: date.toISOString() };
     try {
       setLoading(true);
-      const res = await axios.patch(
+      const res = await api.patch(
         `${MEMBER_API_END_POINT}/${selectedMember}`,
         updatedInput
       );

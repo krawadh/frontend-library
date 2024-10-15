@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Navbar from "../shared/Navbar";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
@@ -10,26 +9,24 @@ import {
   setSearchMemberByText,
   setAllAdminMembers,
   setLoading,
-  setErrmessage,
 } from "@/redux/memberSlice";
 
 import { MEMBER_API_END_POINT } from "@/utils/constant";
-import axios from "axios";
 import Loader from "../shared/Loader";
+import { useAxiosInterceptor } from "@/hooks/useAxiosInterceptor";
 
 const Members = () => {
   const [input, setInput] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const api = useAxiosInterceptor(); // Use the custom Axios instance with interceptors
   const { loading } = useSelector((store) => store.member);
 
   // Fetch all members and dispatch filter input to the Redux store
   useEffect(() => {
     const fetchMembers = async () => {
       try {
-        const res = await axios.get(`${MEMBER_API_END_POINT}`, {
-          //withCredentials: true,
-        });
+        const res = await api.get(`${MEMBER_API_END_POINT}`);
         if (res.data.success) {
           dispatch(setAllAdminMembers(res.data.members));
           dispatch(setLoading(false));
@@ -44,7 +41,7 @@ const Members = () => {
 
   useEffect(() => {
     dispatch(setSearchMemberByText(input));
-  }, [input]);
+  }, [input, dispatch]);
 
   const handleInputChange = (e) => setInput(e.target.value);
 

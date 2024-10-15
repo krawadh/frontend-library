@@ -9,18 +9,19 @@ import {
   TableRow,
 } from "../ui/table";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Edit2, Eye, Loader2, MoreHorizontal, Trash2 } from "lucide-react";
+import { Edit2, MoreHorizontal } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { MEMBERSHIP_API_END_POINT } from "@/utils/constant";
 import { toast } from "sonner";
-import { Button } from "../ui/button";
 import { useDispatch } from "react-redux";
 import { setAllAdminMemberships } from "@/redux/membershipSlice";
+import { useAxiosInterceptor } from "@/hooks/useAxiosInterceptor";
 
 const AdminMembershipsTable = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const api = useAxiosInterceptor(); // Use the custom Axios instance with interceptors
   const [loading, setLoading] = useState(false);
   const { allAdminMemberships, searchMembershipByText } = useSelector(
     (store) => store.membership
@@ -28,7 +29,6 @@ const AdminMembershipsTable = () => {
 
   const [filterMemberships, setFilterMemberships] =
     useState(allAdminMemberships);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const filteredMemberships = allAdminMemberships.filter((membership) => {
@@ -51,11 +51,7 @@ const AdminMembershipsTable = () => {
   const removeHandler = async (id) => {
     try {
       setLoading(true);
-      const res = await axios.delete(`${MEMBERSHIP_API_END_POINT}/${id}`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const res = await api.delete(`${MEMBERSHIP_API_END_POINT}/${id}`);
       if (res.data.success) {
         const afterDeleted = filterMemberships.filter((e) => e._id !== id);
         toast.success(res.data.message);

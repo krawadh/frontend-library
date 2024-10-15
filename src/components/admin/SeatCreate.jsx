@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Navbar from "../shared/Navbar";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
@@ -12,13 +11,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import axios from "axios";
+//import axios from "axios";
 import { SEAT_API_END_POINT } from "@/utils/constant";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Loader2 } from "lucide-react";
+import { useAxiosInterceptor } from "@/hooks/useAxiosInterceptor";
 
 const SeatCreate = () => {
+  const navigate = useNavigate();
+  const api = useAxiosInterceptor(); // Use the custom Axios instance with interceptors
   const { user } = useSelector((store) => store.auth);
   const [input, setInput] = useState({
     seatNumber: "",
@@ -26,7 +28,6 @@ const SeatCreate = () => {
     createdBy: user.id,
   });
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
@@ -40,11 +41,7 @@ const SeatCreate = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      const res = await axios.post(`${SEAT_API_END_POINT}`, input, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const res = await api.post(`${SEAT_API_END_POINT}`, input);
       if (res.data.success) {
         toast.success(res.data.message);
         navigate("/admin/seats");

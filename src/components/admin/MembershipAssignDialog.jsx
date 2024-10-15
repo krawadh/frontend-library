@@ -12,7 +12,6 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Loader2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
 import { MEMBER_API_END_POINT } from "@/utils/constant";
 import useGetMemberById from "@/hooks/useGetMemberById";
 import useGetAllAdminMemberships from "@/hooks/useGetAllAdminMemberships";
@@ -24,7 +23,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
@@ -37,11 +35,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import { useAxiosInterceptor } from "@/hooks/useAxiosInterceptor";
 
 const MembershipAssignDialog = ({ open, setOpen, selectedMember }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [date, setDate] = useState(new Date()); // Ensure default state is set correctly as a Date object
+  const api = useAxiosInterceptor(); // Use the custom Axios instance with interceptors
 
   // Fetch member details when selectedMember changes
   useGetMemberById(selectedMember);
@@ -86,7 +86,7 @@ const MembershipAssignDialog = ({ open, setOpen, selectedMember }) => {
     e.preventDefault();
     try {
       setLoading(true);
-      const res = await axios.patch(
+      const res = await api.patch(
         `${MEMBER_API_END_POINT}/${selectedMember}`,
         input
       );

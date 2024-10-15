@@ -1,21 +1,21 @@
 import { useEffect, useState } from "react";
-import Navbar from "../shared/Navbar";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { RadioGroup } from "../ui/radio-group";
 import { Button } from "../ui/button";
-import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { MEMBER_API_END_POINT } from "@/utils/constant";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { addMember, setLoading } from "../../redux/memberSlice";
+import { useAxiosInterceptor } from "@/hooks/useAxiosInterceptor";
 
 const MemberCreate = () => {
-  const { allAdminMembers, loading } = useSelector((store) => store.member);
+  const { loading } = useSelector((store) => store.member);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const api = useAxiosInterceptor(); // Use the custom Axios instance with interceptors
   const [input, setInput] = useState({
     firstName: "",
     lastName: "",
@@ -55,10 +55,7 @@ const MemberCreate = () => {
     // }
     //console.log("formdata ......", formData);
     try {
-      const res = await axios.post(`${MEMBER_API_END_POINT}`, updatedInput, {
-        //headers: { "Content-Type": "multipart/form-data" },
-        headers: { "Content-Type": "application/json" },
-      });
+      const res = await api.post(`${MEMBER_API_END_POINT}`, updatedInput);
       if (res.data.success) {
         dispatch(addMember(res.data.member));
         toast.success(res.data.message);

@@ -12,15 +12,15 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Loader2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
 import { USER_API_END_POINT } from "@/utils/constant";
 import { setLoading, setUser } from "@/redux/authSlice";
 import { toast } from "sonner";
 import { RadioGroup } from "./ui/radio-group";
+import { useAxiosInterceptor } from "@/hooks/useAxiosInterceptor";
 
 const UpdateProfileDialog = ({ open, setOpen }) => {
   const { loading, user } = useSelector((store) => store.auth);
-
+  const api = useAxiosInterceptor(); // Use the custom Axios instance with interceptors
   const [input, setInput] = useState({
     id: user?.id || "",
     firstName: user?.firstName || "",
@@ -56,15 +56,9 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
     }
     try {
       dispatch(setLoading(true));
-      const res = await axios.patch(
+      const res = await api.patch(
         `${USER_API_END_POINT}/update-profile`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-          //withCredentials: true,
-        }
+        formData
       );
       if (res.data.success) {
         dispatch(setUser(res.data.user));
