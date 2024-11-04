@@ -74,7 +74,10 @@ const UpdateMemberDialog = ({ open, setOpen, selectedMember }) => {
     }
     try {
       setLoading(true);
-      const res = await api.patch(`${MEMBER_API_END_POINT}/${selectedMember}`);
+      const res = await api.patch(
+        `${MEMBER_API_END_POINT}/${selectedMember}`,
+        formData
+      );
       if (res.data.success) {
         const updatedMembers = updateMember(
           allAdminMembers,
